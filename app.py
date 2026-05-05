@@ -694,7 +694,7 @@ if st.session_state.view == "home":
     with sc:
         typed = st.text_input(
             "search",
-            placeholder="// SEARCH TITLE — e.g. blade runner, parasite, dune...",
+            placeholder="SEARCH",
             label_visibility="collapsed",
         )
 
@@ -704,20 +704,20 @@ if st.session_state.view == "home":
         else:
             data, err = api_get_json("/tmdb/search", params={"query": typed.strip()})
             if err or data is None:
-                st.error(f"// SEARCH ERROR: {err}")
+                st.error(f"SEARCH ERROR: {err}")
             else:
                 suggestions, cards = parse_tmdb_search_to_cards(data, typed.strip(), limit=24)
 
                 if suggestions:
                     _, sel_col, _ = st.columns([1, 4, 1])
                     with sel_col:
-                        labels   = ["// SELECT FROM RESULTS"] + [s[0] for s in suggestions]
+                        labels   = ["SELECT FROM RESULTS"] + [s[0] for s in suggestions]
                         selected = st.selectbox("", labels, index=0, label_visibility="collapsed")
-                        if selected != "// SELECT FROM RESULTS":
+                        if selected != "SELECT FROM RESULTS":
                             label_to_id = {s[0]: s[1] for s in suggestions}
                             goto_details(label_to_id[selected])
                 else:
-                    st.info("// NO MATCHES — TRY ANOTHER QUERY")
+                    st.info("NO MATCHES — TRY ANOTHER QUERY")
 
                 sec_head("01", f'RESULTS FOR "{typed.strip().upper()}"')
                 poster_grid(cards, cols=grid_cols, key_prefix="search_results")
@@ -753,7 +753,7 @@ if st.session_state.view == "home":
         "/home", params={"category": st.session_state.home_category, "limit": 24}
     )
     if err or not home_cards:
-        st.error(f"// FEED ERROR: {err or 'UNKNOWN'}")
+        st.error(f"FEED ERROR: {err or 'UNKNOWN'}")
         st.stop()
 
     poster_grid(home_cards, cols=grid_cols, key_prefix="home_feed")
@@ -765,7 +765,7 @@ if st.session_state.view == "home":
 elif st.session_state.view == "details":
     tmdb_id = st.session_state.selected_tmdb_id
     if not tmdb_id:
-        st.warning("// NO RECORD SELECTED")
+        st.warning("NO RECORD SELECTED")
         if st.button("[ BACK TO HOME ]"):
             goto_home()
         st.stop()
@@ -777,7 +777,7 @@ elif st.session_state.view == "details":
 
     data, err = api_get_json(f"/movie/id/{tmdb_id}")
     if err or not data:
-        st.error(f"// LOAD ERROR: {err or 'UNKNOWN'}")
+        st.error(f"LOAD ERROR: {err or 'UNKNOWN'}")
         st.stop()
 
     title   = data.get("title", "UNKNOWN")
